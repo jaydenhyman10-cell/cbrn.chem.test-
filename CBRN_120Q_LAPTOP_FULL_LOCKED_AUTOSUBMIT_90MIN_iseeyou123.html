@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<title>CBRN Knowledge Test (120Q)</title>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;margin:20px;background:#f2f2f2;}
+  .container{max-width:1100px;background:#fff;padding:20px;border-radius:10px;margin:auto;box-shadow:0 2px 10px rgba(0,0,0,.08);}
+  .header-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:end;}
+  .header-grid label{display:block;font-weight:bold;margin-bottom:4px;}
+  input[type='text'], input[type='date'], input[type='password']{width:100%;padding:10px;font-size:14px;border:1px solid #ccc;border-radius:8px;}
+  #timer{font-size:18px;font-weight:bold;color:#b00020;margin-top:12px;}
+  #progress{margin-top:6px;color:#444;}
+  .question{margin:18px 0;padding-bottom:12px;border-bottom:1px solid #eee;}
+  .opt{display:block;margin-left:18px;margin-top:8px;line-height:1.25;}
+  .letter{display:inline-block;width:18px;font-weight:bold;}
+  .correct{color:#0a7a2f;font-weight:bold;}
+  .incorrect{color:#b00020;font-weight:bold;}
+  .answer-key{margin-left:18px;color:#0a7a2f;margin-top:8px;font-weight:bold;}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  button{padding:12px 18px;font-size:16px;cursor:pointer;border:0;border-radius:10px;background:#1a73e8;color:#fff;}
+  button.secondary{background:#5f6368;}
+  button.danger{background:#b00020;}
+  button:disabled{opacity:.45;cursor:not-allowed;}
+  .hidden{display:none;}
+  .notice{background:#eef6ff;border:1px solid #c9e2ff;padding:10px;border-radius:10px;margin-top:12px;}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:18px;}
+  .modal{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:18px 18px 14px;box-shadow:0 10px 30px rgba(0,0,0,.25);}
+  .modal h2{margin:0 0 8px;}
+  .modal p{margin:6px 0 12px;color:#333;}
+  .modal .row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;}
+  .modal .hint{font-size:12px;color:#666;margin-top:8px;}
+
+  @media print{
+    .overlay, button, .controls, #timer, #progress{display:none !important;}
+    body{background:#fff;}
+    .container{box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+<div class='container'>
+  <h1>CBRN Knowledge Test (120 Questions)</h1>
+
+  <div class='header-grid'>
+    <div>
+      <label for='name'>Name</label>
+      <input id='name' type='text' placeholder='Last, First' required>
+    </div>
+    <div>
+      <label for='rank'>Rank</label>
+      <input id='rank' type='text' placeholder='e.g., SPC / SGT' required>
+    </div>
+    <div>
+      <label for='date'>Date</label>
+      <input id='date' type='date' required>
+    </div>
+  </div>
+
+  <div class='notice'>
+    <b>Instructions:</b> Enter your information, unlock the test with the instructor password, then press <b>Start Test</b>. You have <b>90 minutes</b>. Correct answers display only after you submit.
+    <br><b>Focus Lock:</b> Leaving the test window/tab counts as a violation. After <b>3 violations</b> the test will <b>auto-submit</b>.
+  </div>
+
+  <div class='controls'>
+    <button type='button' id='startBtn' onclick='startTest()' disabled>Start Test</button>
+    <button type='button' id='submitBtn' class='danger hidden' onclick='submitTest(false, null)'>Submit Test</button>
+    <button type='button' id='resultsBtn' class='secondary hidden' onclick='downloadResults()'>Download Results</button>
+    <button type='button' id='printBtn' class='secondary hidden' onclick='window.print()'>Print</button>
+  </div>
+
+  <p id='timer' class='hidden'>Time Remaining: 01:30:00</p>
+  <div id='progress' class='hidden'>Answered: 0 / 120</div>
+
+  <form id='quiz' class='hidden'>
+    <div class='question' id='qwrap1'>
+<p><b>1. “C” in CBRN stands for:</b></p>
+<label id='q1o0' class='opt'><input type='radio' name='q1' value='0'> <span class='letter'>A.</span> Control</label>
+<label id='q1o1' class='opt'><input type='radio' name='q1' value='1'> <span class='letter'>B.</span> Chemical</label>
+<label id='q1o2' class='opt'><input type='radio' name='q1' value='2'> <span class='letter'>C.</span> Combat</label>
+<label id='q1o3' class='opt'><input type='radio' name='q1' value='3'> <span class='letter'>D.</span> Contamination</label>
+<div class='answer-key' id='ak1' style='display:none'></div>
+</div>
+<div class='question' id='qwrap2'>
+<p><b>2. Which is a nerve agent?</b></p>
+<label id='q2o0' class='opt'><input type='radio' name='q2' value='0'> <span class='letter'>A.</span> Mustard</label>
+<label id='q2o1' class='opt'><input type='radio' name='q2' value='1'> <span class='letter'>B.</span> VX</label>
+<label id='q2o2' class='opt'><input type='radio' name='q2' value='2'> <span class='letter'>C.</span> Chlorine</label>
+<label id='q2o3' class='opt'><input type='radio' name='q2' value='3'> <span class='letter'>D.</span> Phosgene</label>
+<div class='answer-key' id='ak2' style='display:none'></div>
+</div>
+<div class='question' id='qwrap3'>
+<p><b>3. Mustard is classified as:</b></p>
+<label id='q3o0' class='opt'><input type='radio' name='q3' value='0'> <span class='letter'>A.</span> Blood</label>
+<label id='q3o1' class='opt'><input type='radio' name='q3' value='1'> <span class='letter'>B.</span> Nerve</label>
+<label id='q3o2' class='opt'><input type='radio' name='q3' value='2'> <span class='letter'>C.</span> Blister</label>
+<label id='q3o3' class='opt'><input type='radio' name='q3' value='3'> <span class='letter'>D.</span> Choking</label>
+<div class='answer-key' id='ak3' style='display:none'></div>
+</div>
+<div class='question' id='qwrap4'>
+<p><b>4. Blood agents affect the body by:</b></p>
+<label id='q4o0' class='opt'><input type='radio' name='q4' value='0'> <span class='letter'>A.</span> Burning skin</label>
+<label id='q4o1' class='opt'><input type='radio' name='q4' value='1'> <span class='letter'>B.</span> Attacking lungs</label>
+<label id='q4o2' class='opt'><input type='radio' name='q4' value='2'> <span class='letter'>C.</span> Preventing oxygen use</label>
+<label id='q4o3' class='opt'><input type='radio' name='q4' value='3'> <span class='letter'>D.</span> Causing paralysis</label>
+<div class='answer-key' id='ak4' style='display:none'></div>
+</div>
+<div class='question' id='qwrap5'>
+<p><b>5. Which is a choking agent?</b></p>
+<label id='q5o0' class='opt'><input type='radio' name='q5' value='0'> <span class='letter'>A.</span> Sarin</label>
+<label id='q5o1' class='opt'><input type='radio' name='q5' value='1'> <span class='letter'>B.</span> VX</label>
+<label id='q5o2' class='opt'><input type='radio' name='q5' value='2'> <span class='letter'>C.</span> Phosgene</label>
+<label id='q5o3' class='opt'><input type='radio' name='q5' value='3'> <span class='letter'>D.</span> Mustard</label>
+<div class='answer-key' id='ak5' style='display:none'></div>
+</div>
+<div class='question' id='qwrap6'>
+<p><b>6. VX is considered:</b></p>
+<label id='q6o0' class='opt'><input type='radio' name='q6' value='0'> <span class='letter'>A.</span> Non-persistent</label>
+<label id='q6o1' class='opt'><input type='radio' name='q6' value='1'> <span class='letter'>B.</span> Persistent</label>
+<label id='q6o2' class='opt'><input type='radio' name='q6' value='2'> <span class='letter'>C.</span> Harmless</label>
+<label id='q6o3' class='opt'><input type='radio' name='q6' value='3'> <span class='letter'>D.</span> Riot control</label>
+<div class='answer-key' id='ak6' style='display:none'></div>
+</div>
+<div class='question' id='qwrap7'>
+<p><b>7. Which agent is absorbed through skin easily?</b></p>
+<label id='q7o0' class='opt'><input type='radio' name='q7' value='0'> <span class='letter'>A.</span> Chlorine</label>
+<label id='q7o1' class='opt'><input type='radio' name='q7' value='1'> <span class='letter'>B.</span> VX</label>
+<label id='q7o2' class='opt'><input type='radio' name='q7' value='2'> <span class='letter'>C.</span> Phosgene</label>
+<label id='q7o3' class='opt'><input type='radio' name='q7' value='3'> <span class='letter'>D.</span> Hydrogen Cyanide</label>
+<div class='answer-key' id='ak7' style='display:none'></div>
+</div>
+<div class='question' id='qwrap8'>
+<p><b>8. Which acts the fastest?</b></p>
+<label id='q8o0' class='opt'><input type='radio' name='q8' value='0'> <span class='letter'>A.</span> Mustard</label>
+<label id='q8o1' class='opt'><input type='radio' name='q8' value='1'> <span class='letter'>B.</span> VX</label>
+<label id='q8o2' class='opt'><input type='radio' name='q8' value='2'> <span class='letter'>C.</span> Hydrogen Cyanide</label>
+<label id='q8o3' class='opt'><input type='radio' name='q8' value='3'> <span class='letter'>D.</span> Phosgene</label>
+<div class='answer-key' id='ak8' style='display:none'></div>
+</div>
+<div class='question' id='qwrap9'>
+<p><b>9. Persistent agents:</b></p>
+<label id='q9o0' class='opt'><input type='radio' name='q9' value='0'> <span class='letter'>A.</span> Evaporate quickly</label>
+<label id='q9o1' class='opt'><input type='radio' name='q9' value='1'> <span class='letter'>B.</span> Stay hazardous long</label>
+<label id='q9o2' class='opt'><input type='radio' name='q9' value='2'> <span class='letter'>C.</span> Only affect lungs</label>
+<label id='q9o3' class='opt'><input type='radio' name='q9' value='3'> <span class='letter'>D.</span> Are harmless</label>
+<div class='answer-key' id='ak9' style='display:none'></div>
+</div>
+<div class='question' id='qwrap10'>
+<p><b>10. Which damages DNA/skin?</b></p>
+<label id='q10o0' class='opt'><input type='radio' name='q10' value='0'> <span class='letter'>A.</span> Mustard</label>
+<label id='q10o1' class='opt'><input type='radio' name='q10' value='1'> <span class='letter'>B.</span> Sarin</label>
+<label id='q10o2' class='opt'><input type='radio' name='q10' value='2'> <span class='letter'>C.</span> VX</label>
+<label id='q10o3' class='opt'><input type='radio' name='q10' value='3'> <span class='letter'>D.</span> Cyanide</label>
+<div class='answer-key' id='ak10' style='display:none'></div>
+</div>
+<div class='question' id='qwrap11'>
+<p><b>11. Sarin is:</b></p>
+<label id='q11o0' class='opt'><input type='radio' name='q11' value='0'> <span class='letter'>A.</span> Persistent</label>
+<label id='q11o1' class='opt'><input type='radio' name='q11' value='1'> <span class='letter'>B.</span> Non-persistent</label>
+<label id='q11o2' class='opt'><input type='radio' name='q11' value='2'> <span class='letter'>C.</span> Solid</label>
+<label id='q11o3' class='opt'><input type='radio' name='q11' value='3'> <span class='letter'>D.</span> Riot control</label>
+<div class='answer-key' id='ak11' style='display:none'></div>
+</div>
+<div class='question' id='qwrap12'>
+<p><b>12. Tabun is a:</b></p>
+<label id='q12o0' class='opt'><input type='radio' name='q12' value='0'> <span class='letter'>A.</span> Blood agent</label>
+<label id='q12o1' class='opt'><input type='radio' name='q12' value='1'> <span class='letter'>B.</span> Nerve agent</label>
+<label id='q12o2' class='opt'><input type='radio' name='q12' value='2'> <span class='letter'>C.</span> Blister agent</label>
+<label id='q12o3' class='opt'><input type='radio' name='q12' value='3'> <span class='letter'>D.</span> Choking agent</label>
+<div class='answer-key' id='ak12' style='display:none'></div>
+</div>
+<div class='question' id='qwrap13'>
+<p><b>13. Cyanide affects:</b></p>
+<label id='q13o0' class='opt'><input type='radio' name='q13' value='0'> <span class='letter'>A.</span> Skin</label>
+<label id='q13o1' class='opt'><input type='radio' name='q13' value='1'> <span class='letter'>B.</span> Brain oxygen use</label>
+<label id='q13o2' class='opt'><input type='radio' name='q13' value='2'> <span class='letter'>C.</span> Bones</label>
+<label id='q13o3' class='opt'><input type='radio' name='q13' value='3'> <span class='letter'>D.</span> Eyes only</label>
+<div class='answer-key' id='ak13' style='display:none'></div>
+</div>
+<div class='question' id='qwrap14'>
+<p><b>14. Chlorine primarily affects:</b></p>
+<label id='q14o0' class='opt'><input type='radio' name='q14' value='0'> <span class='letter'>A.</span> Skin</label>
+<label id='q14o1' class='opt'><input type='radio' name='q14' value='1'> <span class='letter'>B.</span> Lungs</label>
+<label id='q14o2' class='opt'><input type='radio' name='q14' value='2'> <span class='letter'>C.</span> Brain</label>
+<label id='q14o3' class='opt'><input type='radio' name='q14' value='3'> <span class='letter'>D.</span> Blood</label>
+<div class='answer-key' id='ak14' style='display:none'></div>
+</div>
+<div class='question' id='qwrap15'>
+<p><b>15. Which is a G-series nerve agent?</b></p>
+<label id='q15o0' class='opt'><input type='radio' name='q15' value='0'> <span class='letter'>A.</span> VX</label>
+<label id='q15o1' class='opt'><input type='radio' name='q15' value='1'> <span class='letter'>B.</span> Sarin</label>
+<label id='q15o2' class='opt'><input type='radio' name='q15' value='2'> <span class='letter'>C.</span> Mustard</label>
+<label id='q15o3' class='opt'><input type='radio' name='q15' value='3'> <span class='letter'>D.</span> Chlorine</label>
+<div class='answer-key' id='ak15' style='display:none'></div>
+</div>
+<div class='question' id='qwrap16'>
+<p><b>16. Which is most lethal per drop?</b></p>
+<label id='q16o0' class='opt'><input type='radio' name='q16' value='0'> <span class='letter'>A.</span> Chlorine</label>
+<label id='q16o1' class='opt'><input type='radio' name='q16' value='1'> <span class='letter'>B.</span> VX</label>
+<label id='q16o2' class='opt'><input type='radio' name='q16' value='2'> <span class='letter'>C.</span> Phosgene</label>
+<label id='q16o3' class='opt'><input type='radio' name='q16' value='3'> <span class='letter'>D.</span> Mustard</label>
+<div class='answer-key' id='ak16' style='display:none'></div>
+</div>
+<div class='question' id='qwrap17'>
+<p><b>17. Blister agents cause:</b></p>
+<label id='q17o0' class='opt'><input type='radio' name='q17' value='0'> <span class='letter'>A.</span> Paralysis</label>
+<label id='q17o1' class='opt'><input type='radio' name='q17' value='1'> <span class='letter'>B.</span> Burns/blisters</label>
+<label id='q17o2' class='opt'><input type='radio' name='q17' value='2'> <span class='letter'>C.</span> Suffocation only</label>
+<label id='q17o3' class='opt'><input type='radio' name='q17' value='3'> <span class='letter'>D.</span> Sleep</label>
+<div class='answer-key' id='ak17' style='display:none'></div>
+</div>
+<div class='question' id='qwrap18'>
+<p><b>18. Non-persistent agents:</b></p>
+<label id='q18o0' class='opt'><input type='radio' name='q18' value='0'> <span class='letter'>A.</span> Stay long</label>
+<label id='q18o1' class='opt'><input type='radio' name='q18' value='1'> <span class='letter'>B.</span> Evaporate quickly</label>
+<label id='q18o2' class='opt'><input type='radio' name='q18' value='2'> <span class='letter'>C.</span> Are solid</label>
+<label id='q18o3' class='opt'><input type='radio' name='q18' value='3'> <span class='letter'>D.</span> Are harmless</label>
+<div class='answer-key' id='ak18' style='display:none'></div>
+</div>
+<div class='question' id='qwrap19'>
+<p><b>19. Nerve agents cause:</b></p>
+<label id='q19o0' class='opt'><input type='radio' name='q19' value='0'> <span class='letter'>A.</span> Muscle control loss</label>
+<label id='q19o1' class='opt'><input type='radio' name='q19' value='1'> <span class='letter'>B.</span> Skin burns only</label>
+<label id='q19o2' class='opt'><input type='radio' name='q19' value='2'> <span class='letter'>C.</span> Bone damage</label>
+<label id='q19o3' class='opt'><input type='radio' name='q19' value='3'> <span class='letter'>D.</span> Hearing loss</label>
+<div class='answer-key' id='ak19' style='display:none'></div>
+</div>
+<div class='question' id='qwrap20'>
+<p><b>20. Blood agents prevent:</b></p>
+<label id='q20o0' class='opt'><input type='radio' name='q20' value='0'> <span class='letter'>A.</span> Movement</label>
+<label id='q20o1' class='opt'><input type='radio' name='q20' value='1'> <span class='letter'>B.</span> Oxygen usage</label>
+<label id='q20o2' class='opt'><input type='radio' name='q20' value='2'> <span class='letter'>C.</span> Vision</label>
+<label id='q20o3' class='opt'><input type='radio' name='q20' value='3'> <span class='letter'>D.</span> Heat control</label>
+<div class='answer-key' id='ak20' style='display:none'></div>
+</div>
+<div class='question' id='qwrap21'>
+<p><b>21. Large-scale chemical warfare began in:</b></p>
+<label id='q21o0' class='opt'><input type='radio' name='q21' value='0'> <span class='letter'>A.</span> WWII</label>
+<label id='q21o1' class='opt'><input type='radio' name='q21' value='1'> <span class='letter'>B.</span> WWI</label>
+<label id='q21o2' class='opt'><input type='radio' name='q21' value='2'> <span class='letter'>C.</span> Vietnam</label>
+<label id='q21o3' class='opt'><input type='radio' name='q21' value='3'> <span class='letter'>D.</span> Iraq</label>
+<div class='answer-key' id='ak21' style='display:none'></div>
+</div>
+<div class='question' id='qwrap22'>
+<p><b>22. First widely used agent:</b></p>
+<label id='q22o0' class='opt'><input type='radio' name='q22' value='0'> <span class='letter'>A.</span> Sarin</label>
+<label id='q22o1' class='opt'><input type='radio' name='q22' value='1'> <span class='letter'>B.</span> VX</label>
+<label id='q22o2' class='opt'><input type='radio' name='q22' value='2'> <span class='letter'>C.</span> Chlorine</label>
+<label id='q22o3' class='opt'><input type='radio' name='q22' value='3'> <span class='letter'>D.</span> Mustard</label>
+<div class='answer-key' id='ak22' style='display:none'></div>
+</div>
+<div class='question' id='qwrap23'>
+<p><b>23. Mustard gas first used in:</b></p>
+<label id='q23o0' class='opt'><input type='radio' name='q23' value='0'> <span class='letter'>A.</span> 1917</label>
+<label id='q23o1' class='opt'><input type='radio' name='q23' value='1'> <span class='letter'>B.</span> 1945</label>
+<label id='q23o2' class='opt'><input type='radio' name='q23' value='2'> <span class='letter'>C.</span> 2003</label>
+<label id='q23o3' class='opt'><input type='radio' name='q23' value='3'> <span class='letter'>D.</span> 1991</label>
+<div class='answer-key' id='ak23' style='display:none'></div>
+</div>
+<div class='question' id='qwrap24'>
+<p><b>24. Chlorine gas was first used by:</b></p>
+<label id='q24o0' class='opt'><input type='radio' name='q24' value='0'> <span class='letter'>A.</span> USA</label>
+<label id='q24o1' class='opt'><input type='radio' name='q24' value='1'> <span class='letter'>B.</span> Germany</label>
+<label id='q24o2' class='opt'><input type='radio' name='q24' value='2'> <span class='letter'>C.</span> France</label>
+<label id='q24o3' class='opt'><input type='radio' name='q24' value='3'> <span class='letter'>D.</span> Russia</label>
+<div class='answer-key' id='ak24' style='display:none'></div>
+</div>
+<div class='question' id='qwrap25'>
+<p><b>25. Chemical weapons were used heavily in:</b></p>
+<label id='q25o0' class='opt'><input type='radio' name='q25' value='0'> <span class='letter'>A.</span> WWII</label>
+<label id='q25o1' class='opt'><input type='radio' name='q25' value='1'> <span class='letter'>B.</span> WWI</label>
+<label id='q25o2' class='opt'><input type='radio' name='q25' value='2'> <span class='letter'>C.</span> Cold War</label>
+<label id='q25o3' class='opt'><input type='radio' name='q25' value='3'> <span class='letter'>D.</span> Gulf War</label>
+<div class='answer-key' id='ak25' style='display:none'></div>
+</div>
+<div class='question' id='qwrap26'>
+<p><b>26. Geneva Convention restricts:</b></p>
+<label id='q26o0' class='opt'><input type='radio' name='q26' value='0'> <span class='letter'>A.</span> Tanks</label>
+<label id='q26o1' class='opt'><input type='radio' name='q26' value='1'> <span class='letter'>B.</span> Chemical weapons</label>
+<label id='q26o2' class='opt'><input type='radio' name='q26' value='2'> <span class='letter'>C.</span> Radios</label>
+<label id='q26o3' class='opt'><input type='radio' name='q26' value='3'> <span class='letter'>D.</span> Food</label>
+<div class='answer-key' id='ak26' style='display:none'></div>
+</div>
+<div class='question' id='qwrap27'>
+<p><b>27. OPCW enforces:</b></p>
+<label id='q27o0' class='opt'><input type='radio' name='q27' value='0'> <span class='letter'>A.</span> Nuclear laws</label>
+<label id='q27o1' class='opt'><input type='radio' name='q27' value='1'> <span class='letter'>B.</span> Chemical weapons ban</label>
+<label id='q27o2' class='opt'><input type='radio' name='q27' value='2'> <span class='letter'>C.</span> Cyber laws</label>
+<label id='q27o3' class='opt'><input type='radio' name='q27' value='3'> <span class='letter'>D.</span> Aviation</label>
+<div class='answer-key' id='ak27' style='display:none'></div>
+</div>
+<div class='question' id='qwrap28'>
+<p><b>28. Mustard gas causes:</b></p>
+<label id='q28o0' class='opt'><input type='radio' name='q28' value='0'> <span class='letter'>A.</span> Immediate death</label>
+<label id='q28o1' class='opt'><input type='radio' name='q28' value='1'> <span class='letter'>B.</span> Delayed injuries</label>
+<label id='q28o2' class='opt'><input type='radio' name='q28' value='2'> <span class='letter'>C.</span> No effect</label>
+<label id='q28o3' class='opt'><input type='radio' name='q28' value='3'> <span class='letter'>D.</span> Only coughing</label>
+<div class='answer-key' id='ak28' style='display:none'></div>
+</div>
+<div class='question' id='qwrap29'>
+<p><b>29. WWI soldiers feared chemicals because:</b></p>
+<label id='q29o0' class='opt'><input type='radio' name='q29' value='0'> <span class='letter'>A.</span> Invisible threat</label>
+<label id='q29o1' class='opt'><input type='radio' name='q29' value='1'> <span class='letter'>B.</span> Loud noise</label>
+<label id='q29o2' class='opt'><input type='radio' name='q29' value='2'> <span class='letter'>C.</span> Heat</label>
+<label id='q29o3' class='opt'><input type='radio' name='q29' value='3'> <span class='letter'>D.</span> Light</label>
+<div class='answer-key' id='ak29' style='display:none'></div>
+</div>
+<div class='question' id='qwrap30'>
+<p><b>30. Chemical weapons are WMDs because:</b></p>
+<label id='q30o0' class='opt'><input type='radio' name='q30' value='0'> <span class='letter'>A.</span> Cheap</label>
+<label id='q30o1' class='opt'><input type='radio' name='q30' value='1'> <span class='letter'>B.</span> Mass casualties</label>
+<label id='q30o2' class='opt'><input type='radio' name='q30' value='2'> <span class='letter'>C.</span> Loud</label>
+<label id='q30o3' class='opt'><input type='radio' name='q30' value='3'> <span class='letter'>D.</span> Slow</label>
+<div class='answer-key' id='ak30' style='display:none'></div>
+</div>
+<div class='question' id='qwrap31'>
+<p><b>31. A modern use occurred in:</b></p>
+<label id='q31o0' class='opt'><input type='radio' name='q31' value='0'> <span class='letter'>A.</span> Syria</label>
+<label id='q31o1' class='opt'><input type='radio' name='q31' value='1'> <span class='letter'>B.</span> Japan</label>
+<label id='q31o2' class='opt'><input type='radio' name='q31' value='2'> <span class='letter'>C.</span> Germany</label>
+<label id='q31o3' class='opt'><input type='radio' name='q31' value='3'> <span class='letter'>D.</span> Canada</label>
+<div class='answer-key' id='ak31' style='display:none'></div>
+</div>
+<div class='question' id='qwrap32'>
+<p><b>32. Chemical agents were banned due to:</b></p>
+<label id='q32o0' class='opt'><input type='radio' name='q32' value='0'> <span class='letter'>A.</span> Cost</label>
+<label id='q32o1' class='opt'><input type='radio' name='q32' value='1'> <span class='letter'>B.</span> Human suffering</label>
+<label id='q32o2' class='opt'><input type='radio' name='q32' value='2'> <span class='letter'>C.</span> Weather</label>
+<label id='q32o3' class='opt'><input type='radio' name='q32' value='3'> <span class='letter'>D.</span> Noise</label>
+<div class='answer-key' id='ak32' style='display:none'></div>
+</div>
+<div class='question' id='qwrap33'>
+<p><b>33. Phosgene was used in:</b></p>
+<label id='q33o0' class='opt'><input type='radio' name='q33' value='0'> <span class='letter'>A.</span> WWI</label>
+<label id='q33o1' class='opt'><input type='radio' name='q33' value='1'> <span class='letter'>B.</span> Vietnam</label>
+<label id='q33o2' class='opt'><input type='radio' name='q33' value='2'> <span class='letter'>C.</span> Iraq</label>
+<label id='q33o3' class='opt'><input type='radio' name='q33' value='3'> <span class='letter'>D.</span> None</label>
+<div class='answer-key' id='ak33' style='display:none'></div>
+</div>
+<div class='question' id='qwrap34'>
+<p><b>34. Chemical weapons treaties aim to:</b></p>
+<label id='q34o0' class='opt'><input type='radio' name='q34' value='0'> <span class='letter'>A.</span> Increase use</label>
+<label id='q34o1' class='opt'><input type='radio' name='q34' value='1'> <span class='letter'>B.</span> Eliminate use</label>
+<label id='q34o2' class='opt'><input type='radio' name='q34' value='2'> <span class='letter'>C.</span> Store them</label>
+<label id='q34o3' class='opt'><input type='radio' name='q34' value='3'> <span class='letter'>D.</span> Test them</label>
+<div class='answer-key' id='ak34' style='display:none'></div>
+</div>
+<div class='question' id='qwrap35'>
+<p><b>35. Mustard gas effects may appear:</b></p>
+<label id='q35o0' class='opt'><input type='radio' name='q35' value='0'> <span class='letter'>A.</span> Instantly</label>
+<label id='q35o1' class='opt'><input type='radio' name='q35' value='1'> <span class='letter'>B.</span> Delayed</label>
+<label id='q35o2' class='opt'><input type='radio' name='q35' value='2'> <span class='letter'>C.</span> Never</label>
+<label id='q35o3' class='opt'><input type='radio' name='q35' value='3'> <span class='letter'>D.</span> Only hours later</label>
+<div class='answer-key' id='ak35' style='display:none'></div>
+</div>
+<div class='question' id='qwrap36'>
+<p><b>36. Chemical warfare caused:</b></p>
+<label id='q36o0' class='opt'><input type='radio' name='q36' value='0'> <span class='letter'>A.</span> Minor injuries</label>
+<label id='q36o1' class='opt'><input type='radio' name='q36' value='1'> <span class='letter'>B.</span> Severe casualties</label>
+<label id='q36o2' class='opt'><input type='radio' name='q36' value='2'> <span class='letter'>C.</span> No impact</label>
+<label id='q36o3' class='opt'><input type='radio' name='q36' value='3'> <span class='letter'>D.</span> Equipment damage only</label>
+<div class='answer-key' id='ak36' style='display:none'></div>
+</div>
+<div class='question' id='qwrap37'>
+<p><b>37. Countries agreed to ban chemicals because:</b></p>
+<label id='q37o0' class='opt'><input type='radio' name='q37' value='0'> <span class='letter'>A.</span> Expensive</label>
+<label id='q37o1' class='opt'><input type='radio' name='q37' value='1'> <span class='letter'>B.</span> Inhumane</label>
+<label id='q37o2' class='opt'><input type='radio' name='q37' value='2'> <span class='letter'>C.</span> Slow</label>
+<label id='q37o3' class='opt'><input type='radio' name='q37' value='3'> <span class='letter'>D.</span> Loud</label>
+<div class='answer-key' id='ak37' style='display:none'></div>
+</div>
+<div class='question' id='qwrap38'>
+<p><b>38. Early chemical attacks relied on:</b></p>
+<label id='q38o0' class='opt'><input type='radio' name='q38' value='0'> <span class='letter'>A.</span> Wind</label>
+<label id='q38o1' class='opt'><input type='radio' name='q38' value='1'> <span class='letter'>B.</span> Technology</label>
+<label id='q38o2' class='opt'><input type='radio' name='q38' value='2'> <span class='letter'>C.</span> Satellites</label>
+<label id='q38o3' class='opt'><input type='radio' name='q38' value='3'> <span class='letter'>D.</span> Drones</label>
+<div class='answer-key' id='ak38' style='display:none'></div>
+</div>
+<div class='question' id='qwrap39'>
+<p><b>39. Gas masks were developed because of:</b></p>
+<label id='q39o0' class='opt'><input type='radio' name='q39' value='0'> <span class='letter'>A.</span> Noise</label>
+<label id='q39o1' class='opt'><input type='radio' name='q39' value='1'> <span class='letter'>B.</span> Chemical threats</label>
+<label id='q39o2' class='opt'><input type='radio' name='q39' value='2'> <span class='letter'>C.</span> Heat</label>
+<label id='q39o3' class='opt'><input type='radio' name='q39' value='3'> <span class='letter'>D.</span> Light</label>
+<div class='answer-key' id='ak39' style='display:none'></div>
+</div>
+<div class='question' id='qwrap40'>
+<p><b>40. Chemical warfare changed warfare by:</b></p>
+<label id='q40o0' class='opt'><input type='radio' name='q40' value='0'> <span class='letter'>A.</span> Increasing fear</label>
+<label id='q40o1' class='opt'><input type='radio' name='q40' value='1'> <span class='letter'>B.</span> Decreasing risk</label>
+<label id='q40o2' class='opt'><input type='radio' name='q40' value='2'> <span class='letter'>C.</span> Removing danger</label>
+<label id='q40o3' class='opt'><input type='radio' name='q40' value='3'> <span class='letter'>D.</span> Making combat easier</label>
+<div class='answer-key' id='ak40' style='display:none'></div>
+</div>
+<div class='question' id='qwrap41'>
+<p><b>41. M8 paper detects:</b></p>
+<label id='q41o0' class='opt'><input type='radio' name='q41' value='0'> <span class='letter'>A.</span> Vapor</label>
+<label id='q41o1' class='opt'><input type='radio' name='q41' value='1'> <span class='letter'>B.</span> Liquid agents</label>
+<label id='q41o2' class='opt'><input type='radio' name='q41' value='2'> <span class='letter'>C.</span> Radiation</label>
+<label id='q41o3' class='opt'><input type='radio' name='q41' value='3'> <span class='letter'>D.</span> Heat</label>
+<div class='answer-key' id='ak41' style='display:none'></div>
+</div>
+<div class='question' id='qwrap42'>
+<p><b>42. M9 paper detects:</b></p>
+<label id='q42o0' class='opt'><input type='radio' name='q42' value='0'> <span class='letter'>A.</span> Exact agent</label>
+<label id='q42o1' class='opt'><input type='radio' name='q42' value='1'> <span class='letter'>B.</span> Liquid presence</label>
+<label id='q42o2' class='opt'><input type='radio' name='q42' value='2'> <span class='letter'>C.</span> Radiation</label>
+<label id='q42o3' class='opt'><input type='radio' name='q42' value='3'> <span class='letter'>D.</span> None</label>
+<div class='answer-key' id='ak42' style='display:none'></div>
+</div>
+<div class='question' id='qwrap43'>
+<p><b>43. JCAD detects:</b></p>
+<label id='q43o0' class='opt'><input type='radio' name='q43' value='0'> <span class='letter'>A.</span> Bio</label>
+<label id='q43o1' class='opt'><input type='radio' name='q43' value='1'> <span class='letter'>B.</span> Chemical vapor</label>
+<label id='q43o2' class='opt'><input type='radio' name='q43' value='2'> <span class='letter'>C.</span> Radiation</label>
+<label id='q43o3' class='opt'><input type='radio' name='q43' value='3'> <span class='letter'>D.</span> Heat</label>
+<div class='answer-key' id='ak43' style='display:none'></div>
+</div>
+<div class='question' id='qwrap44'>
+<p><b>44. JCAD stands for:</b></p>
+<label id='q44o0' class='opt'><input type='radio' name='q44' value='0'> <span class='letter'>A.</span> Joint Chemical Agent Detector</label>
+<label id='q44o1' class='opt'><input type='radio' name='q44' value='1'> <span class='letter'>B.</span> Joint Combat Alert Device</label>
+<label id='q44o2' class='opt'><input type='radio' name='q44' value='2'> <span class='letter'>C.</span> Chemical Alarm Device</label>
+<label id='q44o3' class='opt'><input type='radio' name='q44' value='3'> <span class='letter'>D.</span> Joint Chemical Analysis Detector</label>
+<div class='answer-key' id='ak44' style='display:none'></div>
+</div>
+<div class='question' id='qwrap45'>
+<p><b>45. NBCRV is used for:</b></p>
+<label id='q45o0' class='opt'><input type='radio' name='q45' value='0'> <span class='letter'>A.</span> Combat only</label>
+<label id='q45o1' class='opt'><input type='radio' name='q45' value='1'> <span class='letter'>B.</span> Recon/detection</label>
+<label id='q45o2' class='opt'><input type='radio' name='q45' value='2'> <span class='letter'>C.</span> Cooking</label>
+<label id='q45o3' class='opt'><input type='radio' name='q45' value='3'> <span class='letter'>D.</span> Medical</label>
+<div class='answer-key' id='ak45' style='display:none'></div>
+</div>
+<div class='question' id='qwrap46'>
+<p><b>46. M50 mask protects against:</b></p>
+<label id='q46o0' class='opt'><input type='radio' name='q46' value='0'> <span class='letter'>A.</span> Bullets</label>
+<label id='q46o1' class='opt'><input type='radio' name='q46' value='1'> <span class='letter'>B.</span> Chemicals</label>
+<label id='q46o2' class='opt'><input type='radio' name='q46' value='2'> <span class='letter'>C.</span> Noise</label>
+<label id='q46o3' class='opt'><input type='radio' name='q46' value='3'> <span class='letter'>D.</span> Light</label>
+<div class='answer-key' id='ak46' style='display:none'></div>
+</div>
+<div class='question' id='qwrap47'>
+<p><b>47. Detection confirms:</b></p>
+<label id='q47o0' class='opt'><input type='radio' name='q47' value='0'> <span class='letter'>A.</span> Guess</label>
+<label id='q47o1' class='opt'><input type='radio' name='q47' value='1'> <span class='letter'>B.</span> Hazard presence</label>
+<label id='q47o2' class='opt'><input type='radio' name='q47' value='2'> <span class='letter'>C.</span> Decon</label>
+<label id='q47o3' class='opt'><input type='radio' name='q47' value='3'> <span class='letter'>D.</span> Treatment</label>
+<div class='answer-key' id='ak47' style='display:none'></div>
+</div>
+<div class='question' id='qwrap48'>
+<p><b>48. Wind affects:</b></p>
+<label id='q48o0' class='opt'><input type='radio' name='q48' value='0'> <span class='letter'>A.</span> Spread of agents</label>
+<label id='q48o1' class='opt'><input type='radio' name='q48' value='1'> <span class='letter'>B.</span> Sound</label>
+<label id='q48o2' class='opt'><input type='radio' name='q48' value='2'> <span class='letter'>C.</span> Heat</label>
+<label id='q48o3' class='opt'><input type='radio' name='q48' value='3'> <span class='letter'>D.</span> None</label>
+<div class='answer-key' id='ak48' style='display:none'></div>
+</div>
+<div class='question' id='qwrap49'>
+<p><b>49. A sign of attack:</b></p>
+<label id='q49o0' class='opt'><input type='radio' name='q49' value='0'> <span class='letter'>A.</span> Dead animals</label>
+<label id='q49o1' class='opt'><input type='radio' name='q49' value='1'> <span class='letter'>B.</span> Clear sky</label>
+<label id='q49o2' class='opt'><input type='radio' name='q49' value='2'> <span class='letter'>C.</span> Heat</label>
+<label id='q49o3' class='opt'><input type='radio' name='q49' value='3'> <span class='letter'>D.</span> Silence</label>
+<div class='answer-key' id='ak49' style='display:none'></div>
+</div>
+<div class='question' id='qwrap50'>
+<p><b>50. False positive source:</b></p>
+<label id='q50o0' class='opt'><input type='radio' name='q50' value='0'> <span class='letter'>A.</span> Fuel</label>
+<label id='q50o1' class='opt'><input type='radio' name='q50' value='1'> <span class='letter'>B.</span> Water</label>
+<label id='q50o2' class='opt'><input type='radio' name='q50' value='2'> <span class='letter'>C.</span> Air</label>
+<label id='q50o3' class='opt'><input type='radio' name='q50' value='3'> <span class='letter'>D.</span> Dirt</label>
+<div class='answer-key' id='ak50' style='display:none'></div>
+</div>
+<div class='question' id='qwrap51'>
+<p><b>51. Chemical vapor is hard to detect because:</b></p>
+<label id='q51o0' class='opt'><input type='radio' name='q51' value='0'> <span class='letter'>A.</span> Invisible</label>
+<label id='q51o1' class='opt'><input type='radio' name='q51' value='1'> <span class='letter'>B.</span> Loud</label>
+<label id='q51o2' class='opt'><input type='radio' name='q51' value='2'> <span class='letter'>C.</span> Bright</label>
+<label id='q51o3' class='opt'><input type='radio' name='q51' value='3'> <span class='letter'>D.</span> Solid</label>
+<div class='answer-key' id='ak51' style='display:none'></div>
+</div>
+<div class='question' id='qwrap52'>
+<p><b>52. Detection alarms provide:</b></p>
+<label id='q52o0' class='opt'><input type='radio' name='q52' value='0'> <span class='letter'>A.</span> Warning</label>
+<label id='q52o1' class='opt'><input type='radio' name='q52' value='1'> <span class='letter'>B.</span> Decon</label>
+<label id='q52o2' class='opt'><input type='radio' name='q52' value='2'> <span class='letter'>C.</span> Heat</label>
+<label id='q52o3' class='opt'><input type='radio' name='q52' value='3'> <span class='letter'>D.</span> Noise</label>
+<div class='answer-key' id='ak52' style='display:none'></div>
+</div>
+<div class='question' id='qwrap53'>
+<p><b>53. M291 is for:</b></p>
+<label id='q53o0' class='opt'><input type='radio' name='q53' value='0'> <span class='letter'>A.</span> Skin decon</label>
+<label id='q53o1' class='opt'><input type='radio' name='q53' value='1'> <span class='letter'>B.</span> Detection</label>
+<label id='q53o2' class='opt'><input type='radio' name='q53' value='2'> <span class='letter'>C.</span> Cooking</label>
+<label id='q53o3' class='opt'><input type='radio' name='q53' value='3'> <span class='letter'>D.</span> Storage</label>
+<div class='answer-key' id='ak53' style='display:none'></div>
+</div>
+<div class='question' id='qwrap54'>
+<p><b>54. M295 is for:</b></p>
+<label id='q54o0' class='opt'><input type='radio' name='q54' value='0'> <span class='letter'>A.</span> Equipment decon</label>
+<label id='q54o1' class='opt'><input type='radio' name='q54' value='1'> <span class='letter'>B.</span> Detection</label>
+<label id='q54o2' class='opt'><input type='radio' name='q54' value='2'> <span class='letter'>C.</span> Mask use</label>
+<label id='q54o3' class='opt'><input type='radio' name='q54' value='3'> <span class='letter'>D.</span> Storage</label>
+<div class='answer-key' id='ak54' style='display:none'></div>
+</div>
+<div class='question' id='qwrap55'>
+<p><b>55. Indicators include:</b></p>
+<label id='q55o0' class='opt'><input type='radio' name='q55' value='0'> <span class='letter'>A.</span> Odor</label>
+<label id='q55o1' class='opt'><input type='radio' name='q55' value='1'> <span class='letter'>B.</span> Symptoms</label>
+<label id='q55o2' class='opt'><input type='radio' name='q55' value='2'> <span class='letter'>C.</span> Detectors</label>
+<label id='q55o3' class='opt'><input type='radio' name='q55' value='3'> <span class='letter'>D.</span> All</label>
+<div class='answer-key' id='ak55' style='display:none'></div>
+</div>
+<div class='question' id='qwrap56'>
+<p><b>56. Detection kits are used to:</b></p>
+<label id='q56o0' class='opt'><input type='radio' name='q56' value='0'> <span class='letter'>A.</span> Clean</label>
+<label id='q56o1' class='opt'><input type='radio' name='q56' value='1'> <span class='letter'>B.</span> Confirm contamination</label>
+<label id='q56o2' class='opt'><input type='radio' name='q56' value='2'> <span class='letter'>C.</span> Store</label>
+<label id='q56o3' class='opt'><input type='radio' name='q56' value='3'> <span class='letter'>D.</span> Destroy</label>
+<div class='answer-key' id='ak56' style='display:none'></div>
+</div>
+<div class='question' id='qwrap57'>
+<p><b>57. Chemical detection requires:</b></p>
+<label id='q57o0' class='opt'><input type='radio' name='q57' value='0'> <span class='letter'>A.</span> Guessing</label>
+<label id='q57o1' class='opt'><input type='radio' name='q57' value='1'> <span class='letter'>B.</span> Equipment + observation</label>
+<label id='q57o2' class='opt'><input type='radio' name='q57' value='2'> <span class='letter'>C.</span> No training</label>
+<label id='q57o3' class='opt'><input type='radio' name='q57' value='3'> <span class='letter'>D.</span> None</label>
+<div class='answer-key' id='ak57' style='display:none'></div>
+</div>
+<div class='question' id='qwrap58'>
+<p><b>58. Detector reliability depends on:</b></p>
+<label id='q58o0' class='opt'><input type='radio' name='q58' value='0'> <span class='letter'>A.</span> Training</label>
+<label id='q58o1' class='opt'><input type='radio' name='q58' value='1'> <span class='letter'>B.</span> Weather</label>
+<label id='q58o2' class='opt'><input type='radio' name='q58' value='2'> <span class='letter'>C.</span> Equipment</label>
+<label id='q58o3' class='opt'><input type='radio' name='q58' value='3'> <span class='letter'>D.</span> All</label>
+<div class='answer-key' id='ak58' style='display:none'></div>
+</div>
+<div class='question' id='qwrap59'>
+<p><b>59. Marking hazards is:</b></p>
+<label id='q59o0' class='opt'><input type='radio' name='q59' value='0'> <span class='letter'>A.</span> Optional</label>
+<label id='q59o1' class='opt'><input type='radio' name='q59' value='1'> <span class='letter'>B.</span> Required</label>
+<label id='q59o2' class='opt'><input type='radio' name='q59' value='2'> <span class='letter'>C.</span> Ignored</label>
+<label id='q59o3' class='opt'><input type='radio' name='q59' value='3'> <span class='letter'>D.</span> Delayed</label>
+<div class='answer-key' id='ak59' style='display:none'></div>
+</div>
+<div class='question' id='qwrap60'>
+<p><b>60. Detection supports:</b></p>
+<label id='q60o0' class='opt'><input type='radio' name='q60' value='0'> <span class='letter'>A.</span> Mission safety</label>
+<label id='q60o1' class='opt'><input type='radio' name='q60' value='1'> <span class='letter'>B.</span> Cooking</label>
+<label id='q60o2' class='opt'><input type='radio' name='q60' value='2'> <span class='letter'>C.</span> Sleeping</label>
+<label id='q60o3' class='opt'><input type='radio' name='q60' value='3'> <span class='letter'>D.</span> Noise</label>
+<div class='answer-key' id='ak60' style='display:none'></div>
+</div>
+<div class='question' id='qwrap61'>
+<p><b>61. Mustard smells like:</b></p>
+<label id='q61o0' class='opt'><input type='radio' name='q61' value='0'> <span class='letter'>A.</span> Garlic</label>
+<label id='q61o1' class='opt'><input type='radio' name='q61' value='1'> <span class='letter'>B.</span> Almonds</label>
+<label id='q61o2' class='opt'><input type='radio' name='q61' value='2'> <span class='letter'>C.</span> Fruit</label>
+<label id='q61o3' class='opt'><input type='radio' name='q61' value='3'> <span class='letter'>D.</span> Smoke</label>
+<div class='answer-key' id='ak61' style='display:none'></div>
+</div>
+<div class='question' id='qwrap62'>
+<p><b>62. Chlorine smells like:</b></p>
+<label id='q62o0' class='opt'><input type='radio' name='q62' value='0'> <span class='letter'>A.</span> Bleach</label>
+<label id='q62o1' class='opt'><input type='radio' name='q62' value='1'> <span class='letter'>B.</span> Almonds</label>
+<label id='q62o2' class='opt'><input type='radio' name='q62' value='2'> <span class='letter'>C.</span> Gasoline</label>
+<label id='q62o3' class='opt'><input type='radio' name='q62' value='3'> <span class='letter'>D.</span> Nothing</label>
+<div class='answer-key' id='ak62' style='display:none'></div>
+</div>
+<div class='question' id='qwrap63'>
+<p><b>63. Phosgene smells like:</b></p>
+<label id='q63o0' class='opt'><input type='radio' name='q63' value='0'> <span class='letter'>A.</span> Fresh hay</label>
+<label id='q63o1' class='opt'><input type='radio' name='q63' value='1'> <span class='letter'>B.</span> Garlic</label>
+<label id='q63o2' class='opt'><input type='radio' name='q63' value='2'> <span class='letter'>C.</span> Smoke</label>
+<label id='q63o3' class='opt'><input type='radio' name='q63' value='3'> <span class='letter'>D.</span> Metal</label>
+<div class='answer-key' id='ak63' style='display:none'></div>
+</div>
+<div class='question' id='qwrap64'>
+<p><b>64. Cyanide smells like:</b></p>
+<label id='q64o0' class='opt'><input type='radio' name='q64' value='0'> <span class='letter'>A.</span> Almonds</label>
+<label id='q64o1' class='opt'><input type='radio' name='q64' value='1'> <span class='letter'>B.</span> Pepper</label>
+<label id='q64o2' class='opt'><input type='radio' name='q64' value='2'> <span class='letter'>C.</span> Smoke</label>
+<label id='q64o3' class='opt'><input type='radio' name='q64' value='3'> <span class='letter'>D.</span> Dirt</label>
+<div class='answer-key' id='ak64' style='display:none'></div>
+</div>
+<div class='question' id='qwrap65'>
+<p><b>65. VX is:</b></p>
+<label id='q65o0' class='opt'><input type='radio' name='q65' value='0'> <span class='letter'>A.</span> Odorless</label>
+<label id='q65o1' class='opt'><input type='radio' name='q65' value='1'> <span class='letter'>B.</span> Garlic smell</label>
+<label id='q65o2' class='opt'><input type='radio' name='q65' value='2'> <span class='letter'>C.</span> Sweet</label>
+<label id='q65o3' class='opt'><input type='radio' name='q65' value='3'> <span class='letter'>D.</span> Smoky</label>
+<div class='answer-key' id='ak65' style='display:none'></div>
+</div>
+<div class='question' id='qwrap66'>
+<p><b>66. Sarin is:</b></p>
+<label id='q66o0' class='opt'><input type='radio' name='q66' value='0'> <span class='letter'>A.</span> Odorless</label>
+<label id='q66o1' class='opt'><input type='radio' name='q66' value='1'> <span class='letter'>B.</span> Strong smell</label>
+<label id='q66o2' class='opt'><input type='radio' name='q66' value='2'> <span class='letter'>C.</span> Sweet</label>
+<label id='q66o3' class='opt'><input type='radio' name='q66' value='3'> <span class='letter'>D.</span> Pepper</label>
+<div class='answer-key' id='ak66' style='display:none'></div>
+</div>
+<div class='question' id='qwrap67'>
+<p><b>67. Riot control smells like:</b></p>
+<label id='q67o0' class='opt'><input type='radio' name='q67' value='0'> <span class='letter'>A.</span> Pepper</label>
+<label id='q67o1' class='opt'><input type='radio' name='q67' value='1'> <span class='letter'>B.</span> Almonds</label>
+<label id='q67o2' class='opt'><input type='radio' name='q67' value='2'> <span class='letter'>C.</span> Grass</label>
+<label id='q67o3' class='opt'><input type='radio' name='q67' value='3'> <span class='letter'>D.</span> None</label>
+<div class='answer-key' id='ak67' style='display:none'></div>
+</div>
+<div class='question' id='qwrap68'>
+<p><b>68. Odor is:</b></p>
+<label id='q68o0' class='opt'><input type='radio' name='q68' value='0'> <span class='letter'>A.</span> Reliable</label>
+<label id='q68o1' class='opt'><input type='radio' name='q68' value='1'> <span class='letter'>B.</span> Unreliable</label>
+<label id='q68o2' class='opt'><input type='radio' name='q68' value='2'> <span class='letter'>C.</span> Required</label>
+<label id='q68o3' class='opt'><input type='radio' name='q68' value='3'> <span class='letter'>D.</span> Safe</label>
+<div class='answer-key' id='ak68' style='display:none'></div>
+</div>
+<div class='question' id='qwrap69'>
+<p><b>69. Not all people can smell:</b></p>
+<label id='q69o0' class='opt'><input type='radio' name='q69' value='0'> <span class='letter'>A.</span> Mustard</label>
+<label id='q69o1' class='opt'><input type='radio' name='q69' value='1'> <span class='letter'>B.</span> Cyanide</label>
+<label id='q69o2' class='opt'><input type='radio' name='q69' value='2'> <span class='letter'>C.</span> Chlorine</label>
+<label id='q69o3' class='opt'><input type='radio' name='q69' value='3'> <span class='letter'>D.</span> Pepper</label>
+<div class='answer-key' id='ak69' style='display:none'></div>
+</div>
+<div class='question' id='qwrap70'>
+<p><b>70. Smell detection should be:</b></p>
+<label id='q70o0' class='opt'><input type='radio' name='q70' value='0'> <span class='letter'>A.</span> Primary</label>
+<label id='q70o1' class='opt'><input type='radio' name='q70' value='1'> <span class='letter'>B.</span> Secondary</label>
+<label id='q70o2' class='opt'><input type='radio' name='q70' value='2'> <span class='letter'>C.</span> Ignored</label>
+<label id='q70o3' class='opt'><input type='radio' name='q70' value='3'> <span class='letter'>D.</span> Only method</label>
+<div class='answer-key' id='ak70' style='display:none'></div>
+</div>
+<div class='question' id='qwrap71'>
+<p><b>71. Beaker is used for:</b></p>
+<label id='q71o0' class='opt'><input type='radio' name='q71' value='0'> <span class='letter'>A.</span> Precise measurement</label>
+<label id='q71o1' class='opt'><input type='radio' name='q71' value='1'> <span class='letter'>B.</span> Mixing liquids</label>
+<label id='q71o2' class='opt'><input type='radio' name='q71' value='2'> <span class='letter'>C.</span> Detection</label>
+<label id='q71o3' class='opt'><input type='radio' name='q71' value='3'> <span class='letter'>D.</span> Heating only</label>
+<div class='answer-key' id='ak71' style='display:none'></div>
+</div>
+<div class='question' id='qwrap72'>
+<p><b>72. Graduated cylinder is for:</b></p>
+<label id='q72o0' class='opt'><input type='radio' name='q72' value='0'> <span class='letter'>A.</span> Mixing</label>
+<label id='q72o1' class='opt'><input type='radio' name='q72' value='1'> <span class='letter'>B.</span> Measuring volume</label>
+<label id='q72o2' class='opt'><input type='radio' name='q72' value='2'> <span class='letter'>C.</span> Heating</label>
+<label id='q72o3' class='opt'><input type='radio' name='q72' value='3'> <span class='letter'>D.</span> Storage</label>
+<div class='answer-key' id='ak72' style='display:none'></div>
+</div>
+<div class='question' id='qwrap73'>
+<p><b>73. Flask is used for:</b></p>
+<label id='q73o0' class='opt'><input type='radio' name='q73' value='0'> <span class='letter'>A.</span> Measuring</label>
+<label id='q73o1' class='opt'><input type='radio' name='q73' value='1'> <span class='letter'>B.</span> Mixing safely</label>
+<label id='q73o2' class='opt'><input type='radio' name='q73' value='2'> <span class='letter'>C.</span> Detection</label>
+<label id='q73o3' class='opt'><input type='radio' name='q73' value='3'> <span class='letter'>D.</span> Storage only</label>
+<div class='answer-key' id='ak73' style='display:none'></div>
+</div>
+<div class='question' id='qwrap74'>
+<p><b>74. Pipette is used to:</b></p>
+<label id='q74o0' class='opt'><input type='radio' name='q74' value='0'> <span class='letter'>A.</span> Transfer small amounts</label>
+<label id='q74o1' class='opt'><input type='radio' name='q74' value='1'> <span class='letter'>B.</span> Heat</label>
+<label id='q74o2' class='opt'><input type='radio' name='q74' value='2'> <span class='letter'>C.</span> Detect</label>
+<label id='q74o3' class='opt'><input type='radio' name='q74' value='3'> <span class='letter'>D.</span> Store</label>
+<div class='answer-key' id='ak74' style='display:none'></div>
+</div>
+<div class='question' id='qwrap75'>
+<p><b>75. Test tube is used for:</b></p>
+<label id='q75o0' class='opt'><input type='radio' name='q75' value='0'> <span class='letter'>A.</span> Large mixing</label>
+<label id='q75o1' class='opt'><input type='radio' name='q75' value='1'> <span class='letter'>B.</span> Small reactions</label>
+<label id='q75o2' class='opt'><input type='radio' name='q75' value='2'> <span class='letter'>C.</span> Storage</label>
+<label id='q75o3' class='opt'><input type='radio' name='q75' value='3'> <span class='letter'>D.</span> Detection</label>
+<div class='answer-key' id='ak75' style='display:none'></div>
+</div>
+<div class='question' id='qwrap76'>
+<p><b>76. Glassware must be:</b></p>
+<label id='q76o0' class='opt'><input type='radio' name='q76' value='0'> <span class='letter'>A.</span> Dirty</label>
+<label id='q76o1' class='opt'><input type='radio' name='q76' value='1'> <span class='letter'>B.</span> Clean</label>
+<label id='q76o2' class='opt'><input type='radio' name='q76' value='2'> <span class='letter'>C.</span> Painted</label>
+<label id='q76o3' class='opt'><input type='radio' name='q76' value='3'> <span class='letter'>D.</span> Broken</label>
+<div class='answer-key' id='ak76' style='display:none'></div>
+</div>
+<div class='question' id='qwrap77'>
+<p><b>77. Cross contamination means:</b></p>
+<label id='q77o0' class='opt'><input type='radio' name='q77' value='0'> <span class='letter'>A.</span> Mixing chemicals accidentally</label>
+<label id='q77o1' class='opt'><input type='radio' name='q77' value='1'> <span class='letter'>B.</span> Cleaning</label>
+<label id='q77o2' class='opt'><input type='radio' name='q77' value='2'> <span class='letter'>C.</span> Heating</label>
+<label id='q77o3' class='opt'><input type='radio' name='q77' value='3'> <span class='letter'>D.</span> Storage</label>
+<div class='answer-key' id='ak77' style='display:none'></div>
+</div>
+<div class='question' id='qwrap78'>
+<p><b>78. Best for accurate measurement:</b></p>
+<label id='q78o0' class='opt'><input type='radio' name='q78' value='0'> <span class='letter'>A.</span> Beaker</label>
+<label id='q78o1' class='opt'><input type='radio' name='q78' value='1'> <span class='letter'>B.</span> Flask</label>
+<label id='q78o2' class='opt'><input type='radio' name='q78' value='2'> <span class='letter'>C.</span> Cylinder</label>
+<label id='q78o3' class='opt'><input type='radio' name='q78' value='3'> <span class='letter'>D.</span> Tube</label>
+<div class='answer-key' id='ak78' style='display:none'></div>
+</div>
+<div class='question' id='qwrap79'>
+<p><b>79. Pipettes provide:</b></p>
+<label id='q79o0' class='opt'><input type='radio' name='q79' value='0'> <span class='letter'>A.</span> Storage</label>
+<label id='q79o1' class='opt'><input type='radio' name='q79' value='1'> <span class='letter'>B.</span> Precision transfer</label>
+<label id='q79o2' class='opt'><input type='radio' name='q79' value='2'> <span class='letter'>C.</span> Heating</label>
+<label id='q79o3' class='opt'><input type='radio' name='q79' value='3'> <span class='letter'>D.</span> Detection</label>
+<div class='answer-key' id='ak79' style='display:none'></div>
+</div>
+<div class='question' id='qwrap80'>
+<p><b>80. Glassware is important for:</b></p>
+<label id='q80o0' class='opt'><input type='radio' name='q80' value='0'> <span class='letter'>A.</span> Safety</label>
+<label id='q80o1' class='opt'><input type='radio' name='q80' value='1'> <span class='letter'>B.</span> Looks</label>
+<label id='q80o2' class='opt'><input type='radio' name='q80' value='2'> <span class='letter'>C.</span> Uniform</label>
+<label id='q80o3' class='opt'><input type='radio' name='q80' value='3'> <span class='letter'>D.</span> Noise</label>
+<div class='answer-key' id='ak80' style='display:none'></div>
+</div>
+<div class='question' id='qwrap81'>
+<p><b>81. Recon mission:</b></p>
+<label id='q81o0' class='opt'><input type='radio' name='q81' value='0'> <span class='letter'>A.</span> Fight only</label>
+<label id='q81o1' class='opt'><input type='radio' name='q81' value='1'> <span class='letter'>B.</span> Detect &amp; report</label>
+<label id='q81o2' class='opt'><input type='radio' name='q81' value='2'> <span class='letter'>C.</span> Cook</label>
+<label id='q81o3' class='opt'><input type='radio' name='q81' value='3'> <span class='letter'>D.</span> Build</label>
+<div class='answer-key' id='ak81' style='display:none'></div>
+</div>
+<div class='question' id='qwrap82'>
+<p><b>82. SSA stands for:</b></p>
+<label id='q82o0' class='opt'><input type='radio' name='q82' value='0'> <span class='letter'>A.</span> Sensitive Site Assessment</label>
+<label id='q82o1' class='opt'><input type='radio' name='q82' value='1'> <span class='letter'>B.</span> Secure Site Attack</label>
+<label id='q82o2' class='opt'><input type='radio' name='q82' value='2'> <span class='letter'>C.</span> Safety Area</label>
+<label id='q82o3' class='opt'><input type='radio' name='q82' value='3'> <span class='letter'>D.</span> Strike Area</label>
+<div class='answer-key' id='ak82' style='display:none'></div>
+</div>
+<div class='question' id='qwrap83'>
+<p><b>83. SSE stands for:</b></p>
+<label id='q83o0' class='opt'><input type='radio' name='q83' value='0'> <span class='letter'>A.</span> Sensitive Site Exploitation</label>
+<label id='q83o1' class='opt'><input type='radio' name='q83' value='1'> <span class='letter'>B.</span> Secure Site Entry</label>
+<label id='q83o2' class='opt'><input type='radio' name='q83' value='2'> <span class='letter'>C.</span> Safety Event</label>
+<label id='q83o3' class='opt'><input type='radio' name='q83' value='3'> <span class='letter'>D.</span> Strike Element</label>
+<div class='answer-key' id='ak83' style='display:none'></div>
+</div>
+<div class='question' id='qwrap84'>
+<p><b>84. SSE includes:</b></p>
+<label id='q84o0' class='opt'><input type='radio' name='q84' value='0'> <span class='letter'>A.</span> Ignoring hazards</label>
+<label id='q84o1' class='opt'><input type='radio' name='q84' value='1'> <span class='letter'>B.</span> Collecting samples</label>
+<label id='q84o2' class='opt'><input type='radio' name='q84' value='2'> <span class='letter'>C.</span> Leaving</label>
+<label id='q84o3' class='opt'><input type='radio' name='q84' value='3'> <span class='letter'>D.</span> Sleeping</label>
+<div class='answer-key' id='ak84' style='display:none'></div>
+</div>
+<div class='question' id='qwrap85'>
+<p><b>85. Recon reports:</b></p>
+<label id='q85o0' class='opt'><input type='radio' name='q85' value='0'> <span class='letter'>A.</span> Nothing</label>
+<label id='q85o1' class='opt'><input type='radio' name='q85' value='1'> <span class='letter'>B.</span> Hazard info</label>
+<label id='q85o2' class='opt'><input type='radio' name='q85' value='2'> <span class='letter'>C.</span> Weather only</label>
+<label id='q85o3' class='opt'><input type='radio' name='q85' value='3'> <span class='letter'>D.</span> Noise</label>
+<div class='answer-key' id='ak85' style='display:none'></div>
+</div>
+<div class='question' id='qwrap86'>
+<p><b>86. NBCRV supports:</b></p>
+<label id='q86o0' class='opt'><input type='radio' name='q86' value='0'> <span class='letter'>A.</span> Cooking</label>
+<label id='q86o1' class='opt'><input type='radio' name='q86' value='1'> <span class='letter'>B.</span> Recon</label>
+<label id='q86o2' class='opt'><input type='radio' name='q86' value='2'> <span class='letter'>C.</span> Sleep</label>
+<label id='q86o3' class='opt'><input type='radio' name='q86' value='3'> <span class='letter'>D.</span> Storage</label>
+<div class='answer-key' id='ak86' style='display:none'></div>
+</div>
+<div class='question' id='qwrap87'>
+<p><b>87. SSA focuses on:</b></p>
+<label id='q87o0' class='opt'><input type='radio' name='q87' value='0'> <span class='letter'>A.</span> Assessment</label>
+<label id='q87o1' class='opt'><input type='radio' name='q87' value='1'> <span class='letter'>B.</span> Attack</label>
+<label id='q87o2' class='opt'><input type='radio' name='q87' value='2'> <span class='letter'>C.</span> Storage</label>
+<label id='q87o3' class='opt'><input type='radio' name='q87' value='3'> <span class='letter'>D.</span> Retreat</label>
+<div class='answer-key' id='ak87' style='display:none'></div>
+</div>
+<div class='question' id='qwrap88'>
+<p><b>88. SSE focuses on:</b></p>
+<label id='q88o0' class='opt'><input type='radio' name='q88' value='0'> <span class='letter'>A.</span> Exploitation</label>
+<label id='q88o1' class='opt'><input type='radio' name='q88' value='1'> <span class='letter'>B.</span> Retreat</label>
+<label id='q88o2' class='opt'><input type='radio' name='q88' value='2'> <span class='letter'>C.</span> Storage</label>
+<label id='q88o3' class='opt'><input type='radio' name='q88' value='3'> <span class='letter'>D.</span> Cooking</label>
+<div class='answer-key' id='ak88' style='display:none'></div>
+</div>
+<div class='question' id='qwrap89'>
+<p><b>89. Recon platoons use:</b></p>
+<label id='q89o0' class='opt'><input type='radio' name='q89' value='0'> <span class='letter'>A.</span> Detection equipment</label>
+<label id='q89o1' class='opt'><input type='radio' name='q89' value='1'> <span class='letter'>B.</span> Cooking gear</label>
+<label id='q89o2' class='opt'><input type='radio' name='q89' value='2'> <span class='letter'>C.</span> Radios only</label>
+<label id='q89o3' class='opt'><input type='radio' name='q89' value='3'> <span class='letter'>D.</span> None</label>
+<div class='answer-key' id='ak89' style='display:none'></div>
+</div>
+<div class='question' id='qwrap90'>
+<p><b>90. Reporting ensures:</b></p>
+<label id='q90o0' class='opt'><input type='radio' name='q90' value='0'> <span class='letter'>A.</span> Safety</label>
+<label id='q90o1' class='opt'><input type='radio' name='q90' value='1'> <span class='letter'>B.</span> Confusion</label>
+<label id='q90o2' class='opt'><input type='radio' name='q90' value='2'> <span class='letter'>C.</span> Delay</label>
+<label id='q90o3' class='opt'><input type='radio' name='q90' value='3'> <span class='letter'>D.</span> Silence</label>
+<div class='answer-key' id='ak90' style='display:none'></div>
+</div>
+<div class='question' id='qwrap91'>
+<p><b>91. Immediate decon is for:</b></p>
+<label id='q91o0' class='opt'><input type='radio' name='q91' value='0'> <span class='letter'>A.</span> Life-saving</label>
+<label id='q91o1' class='opt'><input type='radio' name='q91' value='1'> <span class='letter'>B.</span> Vehicles</label>
+<label id='q91o2' class='opt'><input type='radio' name='q91' value='2'> <span class='letter'>C.</span> Terrain</label>
+<label id='q91o3' class='opt'><input type='radio' name='q91' value='3'> <span class='letter'>D.</span> Storage</label>
+<div class='answer-key' id='ak91' style='display:none'></div>
+</div>
+<div class='question' id='qwrap92'>
+<p><b>92. Operational decon:</b></p>
+<label id='q92o0' class='opt'><input type='radio' name='q92' value='0'> <span class='letter'>A.</span> Maintains mission</label>
+<label id='q92o1' class='opt'><input type='radio' name='q92' value='1'> <span class='letter'>B.</span> Fully cleans</label>
+<label id='q92o2' class='opt'><input type='radio' name='q92' value='2'> <span class='letter'>C.</span> Ignores</label>
+<label id='q92o3' class='opt'><input type='radio' name='q92' value='3'> <span class='letter'>D.</span> Destroys</label>
+<div class='answer-key' id='ak92' style='display:none'></div>
+</div>
+<div class='question' id='qwrap93'>
+<p><b>93. Thorough decon:</b></p>
+<label id='q93o0' class='opt'><input type='radio' name='q93' value='0'> <span class='letter'>A.</span> Full removal</label>
+<label id='q93o1' class='opt'><input type='radio' name='q93' value='1'> <span class='letter'>B.</span> Ignore</label>
+<label id='q93o2' class='opt'><input type='radio' name='q93' value='2'> <span class='letter'>C.</span> Detect</label>
+<label id='q93o3' class='opt'><input type='radio' name='q93' value='3'> <span class='letter'>D.</span> Store</label>
+<div class='answer-key' id='ak93' style='display:none'></div>
+</div>
+<div class='question' id='qwrap94'>
+<p><b>94. Priority:</b></p>
+<label id='q94o0' class='opt'><input type='radio' name='q94' value='0'> <span class='letter'>A.</span> Equipment</label>
+<label id='q94o1' class='opt'><input type='radio' name='q94' value='1'> <span class='letter'>B.</span> Vehicles</label>
+<label id='q94o2' class='opt'><input type='radio' name='q94' value='2'> <span class='letter'>C.</span> Personnel</label>
+<label id='q94o3' class='opt'><input type='radio' name='q94' value='3'> <span class='letter'>D.</span> Terrain</label>
+<div class='answer-key' id='ak94' style='display:none'></div>
+</div>
+<div class='question' id='qwrap95'>
+<p><b>95. MOPP protects against:</b></p>
+<label id='q95o0' class='opt'><input type='radio' name='q95' value='0'> <span class='letter'>A.</span> Bullets</label>
+<label id='q95o1' class='opt'><input type='radio' name='q95' value='1'> <span class='letter'>B.</span> Chemicals</label>
+<label id='q95o2' class='opt'><input type='radio' name='q95' value='2'> <span class='letter'>C.</span> Noise</label>
+<label id='q95o3' class='opt'><input type='radio' name='q95' value='3'> <span class='letter'>D.</span> Heat</label>
+<div class='answer-key' id='ak95' style='display:none'></div>
+</div>
+<div class='question' id='qwrap96'>
+<p><b>96. Skin decon uses:</b></p>
+<label id='q96o0' class='opt'><input type='radio' name='q96' value='0'> <span class='letter'>A.</span> M291</label>
+<label id='q96o1' class='opt'><input type='radio' name='q96' value='1'> <span class='letter'>B.</span> Mask</label>
+<label id='q96o2' class='opt'><input type='radio' name='q96' value='2'> <span class='letter'>C.</span> Radio</label>
+<label id='q96o3' class='opt'><input type='radio' name='q96' value='3'> <span class='letter'>D.</span> Boots</label>
+<div class='answer-key' id='ak96' style='display:none'></div>
+</div>
+<div class='question' id='qwrap97'>
+<p><b>97. Equipment decon uses:</b></p>
+<label id='q97o0' class='opt'><input type='radio' name='q97' value='0'> <span class='letter'>A.</span> M295</label>
+<label id='q97o1' class='opt'><input type='radio' name='q97' value='1'> <span class='letter'>B.</span> M8</label>
+<label id='q97o2' class='opt'><input type='radio' name='q97' value='2'> <span class='letter'>C.</span> NVG</label>
+<label id='q97o3' class='opt'><input type='radio' name='q97' value='3'> <span class='letter'>D.</span> Compass</label>
+<div class='answer-key' id='ak97' style='display:none'></div>
+</div>
+<div class='question' id='qwrap98'>
+<p><b>98. Decon reduces:</b></p>
+<label id='q98o0' class='opt'><input type='radio' name='q98' value='0'> <span class='letter'>A.</span> Contamination</label>
+<label id='q98o1' class='opt'><input type='radio' name='q98' value='1'> <span class='letter'>B.</span> Noise</label>
+<label id='q98o2' class='opt'><input type='radio' name='q98' value='2'> <span class='letter'>C.</span> Heat</label>
+<label id='q98o3' class='opt'><input type='radio' name='q98' value='3'> <span class='letter'>D.</span> Light</label>
+<div class='answer-key' id='ak98' style='display:none'></div>
+</div>
+<div class='question' id='qwrap99'>
+<p><b>99. Decon sites must be:</b></p>
+<label id='q99o0' class='opt'><input type='radio' name='q99' value='0'> <span class='letter'>A.</span> Organized</label>
+<label id='q99o1' class='opt'><input type='radio' name='q99' value='1'> <span class='letter'>B.</span> Random</label>
+<label id='q99o2' class='opt'><input type='radio' name='q99' value='2'> <span class='letter'>C.</span> Hidden</label>
+<label id='q99o3' class='opt'><input type='radio' name='q99' value='3'> <span class='letter'>D.</span> None</label>
+<div class='answer-key' id='ak99' style='display:none'></div>
+</div>
+<div class='question' id='qwrap100'>
+<p><b>100. Marking contamination:</b></p>
+<label id='q100o0' class='opt'><input type='radio' name='q100' value='0'> <span class='letter'>A.</span> Warns others</label>
+<label id='q100o1' class='opt'><input type='radio' name='q100' value='1'> <span class='letter'>B.</span> Hides</label>
+<label id='q100o2' class='opt'><input type='radio' name='q100' value='2'> <span class='letter'>C.</span> Stores</label>
+<label id='q100o3' class='opt'><input type='radio' name='q100' value='3'> <span class='letter'>D.</span> Delays</label>
+<div class='answer-key' id='ak100' style='display:none'></div>
+</div>
+<div class='question' id='qwrap101'>
+<p><b>101. 4th generation agents are:</b></p>
+<label id='q101o0' class='opt'><input type='radio' name='q101' value='0'> <span class='letter'>A.</span> Mustard</label>
+<label id='q101o1' class='opt'><input type='radio' name='q101' value='1'> <span class='letter'>B.</span> Novichok</label>
+<label id='q101o2' class='opt'><input type='radio' name='q101' value='2'> <span class='letter'>C.</span> Blood</label>
+<label id='q101o3' class='opt'><input type='radio' name='q101' value='3'> <span class='letter'>D.</span> Riot</label>
+<div class='answer-key' id='ak101' style='display:none'></div>
+</div>
+<div class='question' id='qwrap102'>
+<p><b>102. Developed by:</b></p>
+<label id='q102o0' class='opt'><input type='radio' name='q102' value='0'> <span class='letter'>A.</span> USA</label>
+<label id='q102o1' class='opt'><input type='radio' name='q102' value='1'> <span class='letter'>B.</span> Germany</label>
+<label id='q102o2' class='opt'><input type='radio' name='q102' value='2'> <span class='letter'>C.</span> Soviet Union</label>
+<label id='q102o3' class='opt'><input type='radio' name='q102' value='3'> <span class='letter'>D.</span> China</label>
+<div class='answer-key' id='ak102' style='display:none'></div>
+</div>
+<div class='question' id='qwrap103'>
+<p><b>103. “Novichok” means:</b></p>
+<label id='q103o0' class='opt'><input type='radio' name='q103' value='0'> <span class='letter'>A.</span> Deadly gas</label>
+<label id='q103o1' class='opt'><input type='radio' name='q103' value='1'> <span class='letter'>B.</span> Newcomer</label>
+<label id='q103o2' class='opt'><input type='radio' name='q103' value='2'> <span class='letter'>C.</span> Invisible</label>
+<label id='q103o3' class='opt'><input type='radio' name='q103' value='3'> <span class='letter'>D.</span> Killer</label>
+<div class='answer-key' id='ak103' style='display:none'></div>
+</div>
+<div class='question' id='qwrap104'>
+<p><b>104. Affect the:</b></p>
+<label id='q104o0' class='opt'><input type='radio' name='q104' value='0'> <span class='letter'>A.</span> Skin</label>
+<label id='q104o1' class='opt'><input type='radio' name='q104' value='1'> <span class='letter'>B.</span> Nervous system</label>
+<label id='q104o2' class='opt'><input type='radio' name='q104' value='2'> <span class='letter'>C.</span> Bones</label>
+<label id='q104o3' class='opt'><input type='radio' name='q104' value='3'> <span class='letter'>D.</span> Blood</label>
+<div class='answer-key' id='ak104' style='display:none'></div>
+</div>
+<div class='question' id='qwrap105'>
+<p><b>105. Compared to others:</b></p>
+<label id='q105o0' class='opt'><input type='radio' name='q105' value='0'> <span class='letter'>A.</span> Less toxic</label>
+<label id='q105o1' class='opt'><input type='radio' name='q105' value='1'> <span class='letter'>B.</span> More toxic</label>
+<label id='q105o2' class='opt'><input type='radio' name='q105' value='2'> <span class='letter'>C.</span> Harmless</label>
+<label id='q105o3' class='opt'><input type='radio' name='q105' value='3'> <span class='letter'>D.</span> Weak</label>
+<div class='answer-key' id='ak105' style='display:none'></div>
+</div>
+<div class='question' id='qwrap106'>
+<p><b>106. Danger includes:</b></p>
+<label id='q106o0' class='opt'><input type='radio' name='q106' value='0'> <span class='letter'>A.</span> Visible</label>
+<label id='q106o1' class='opt'><input type='radio' name='q106' value='1'> <span class='letter'>B.</span> Binary form</label>
+<label id='q106o2' class='opt'><input type='radio' name='q106' value='2'> <span class='letter'>C.</span> Loud</label>
+<label id='q106o3' class='opt'><input type='radio' name='q106' value='3'> <span class='letter'>D.</span> Bright</label>
+<div class='answer-key' id='ak106' style='display:none'></div>
+</div>
+<div class='question' id='qwrap107'>
+<p><b>107. Binary weapons mean:</b></p>
+<label id='q107o0' class='opt'><input type='radio' name='q107' value='0'> <span class='letter'>A.</span> One chemical</label>
+<label id='q107o1' class='opt'><input type='radio' name='q107' value='1'> <span class='letter'>B.</span> Two chemicals combine</label>
+<label id='q107o2' class='opt'><input type='radio' name='q107' value='2'> <span class='letter'>C.</span> Bio + chem</label>
+<label id='q107o3' class='opt'><input type='radio' name='q107' value='3'> <span class='letter'>D.</span> Solid</label>
+<div class='answer-key' id='ak107' style='display:none'></div>
+</div>
+<div class='question' id='qwrap108'>
+<p><b>108. Detection is difficult because:</b></p>
+<label id='q108o0' class='opt'><input type='radio' name='q108' value='0'> <span class='letter'>A.</span> Glow</label>
+<label id='q108o1' class='opt'><input type='radio' name='q108' value='1'> <span class='letter'>B.</span> Evade detectors</label>
+<label id='q108o2' class='opt'><input type='radio' name='q108' value='2'> <span class='letter'>C.</span> Loud</label>
+<label id='q108o3' class='opt'><input type='radio' name='q108' value='3'> <span class='letter'>D.</span> Solid</label>
+<div class='answer-key' id='ak108' style='display:none'></div>
+</div>
+<div class='question' id='qwrap109'>
+<p><b>109. Exposure causes:</b></p>
+<label id='q109o0' class='opt'><input type='radio' name='q109' value='0'> <span class='letter'>A.</span> Muscle failure</label>
+<label id='q109o1' class='opt'><input type='radio' name='q109' value='1'> <span class='letter'>B.</span> Itching</label>
+<label id='q109o2' class='opt'><input type='radio' name='q109' value='2'> <span class='letter'>C.</span> Sleep</label>
+<label id='q109o3' class='opt'><input type='radio' name='q109' value='3'> <span class='letter'>D.</span> Headache</label>
+<div class='answer-key' id='ak109' style='display:none'></div>
+</div>
+<div class='question' id='qwrap110'>
+<p><b>110. Dangerous because:</b></p>
+<label id='q110o0' class='opt'><input type='radio' name='q110' value='0'> <span class='letter'>A.</span> Common</label>
+<label id='q110o1' class='opt'><input type='radio' name='q110' value='1'> <span class='letter'>B.</span> Hard to detect + toxic</label>
+<label id='q110o2' class='opt'><input type='radio' name='q110' value='2'> <span class='letter'>C.</span> Weak</label>
+<label id='q110o3' class='opt'><input type='radio' name='q110' value='3'> <span class='letter'>D.</span> Fast only</label>
+<div class='answer-key' id='ak110' style='display:none'></div>
+</div>
+<div class='question' id='qwrap111'>
+<p><b>111. PPE stands for:</b></p>
+<label id='q111o0' class='opt'><input type='radio' name='q111' value='0'> <span class='letter'>A.</span> Personal Protective Equipment</label>
+<label id='q111o1' class='opt'><input type='radio' name='q111' value='1'> <span class='letter'>B.</span> Primary Protection Element</label>
+<label id='q111o2' class='opt'><input type='radio' name='q111' value='2'> <span class='letter'>C.</span> Personnel Protection Equipment</label>
+<label id='q111o3' class='opt'><input type='radio' name='q111' value='3'> <span class='letter'>D.</span> Protective Personnel Element</label>
+<div class='answer-key' id='ak111' style='display:none'></div>
+</div>
+<div class='question' id='qwrap112'>
+<p><b>112. The primary purpose of PPE in CBRN is to:</b></p>
+<label id='q112o0' class='opt'><input type='radio' name='q112' value='0'> <span class='letter'>A.</span> Improve comfort</label>
+<label id='q112o1' class='opt'><input type='radio' name='q112' value='1'> <span class='letter'>B.</span> Protect against hazards</label>
+<label id='q112o2' class='opt'><input type='radio' name='q112' value='2'> <span class='letter'>C.</span> Increase speed</label>
+<label id='q112o3' class='opt'><input type='radio' name='q112' value='3'> <span class='letter'>D.</span> Reduce weight</label>
+<div class='answer-key' id='ak112' style='display:none'></div>
+</div>
+<div class='question' id='qwrap113'>
+<p><b>113. The standard issue protective mask is the:</b></p>
+<label id='q113o0' class='opt'><input type='radio' name='q113' value='0'> <span class='letter'>A.</span> M40</label>
+<label id='q113o1' class='opt'><input type='radio' name='q113' value='1'> <span class='letter'>B.</span> M50</label>
+<label id='q113o2' class='opt'><input type='radio' name='q113' value='2'> <span class='letter'>C.</span> M17</label>
+<label id='q113o3' class='opt'><input type='radio' name='q113' value='3'> <span class='letter'>D.</span> M4</label>
+<div class='answer-key' id='ak113' style='display:none'></div>
+</div>
+<div class='question' id='qwrap114'>
+<p><b>114. MOPP level 4 includes:</b></p>
+<label id='q114o0' class='opt'><input type='radio' name='q114' value='0'> <span class='letter'>A.</span> Mask only</label>
+<label id='q114o1' class='opt'><input type='radio' name='q114' value='1'> <span class='letter'>B.</span> Mask + gloves</label>
+<label id='q114o2' class='opt'><input type='radio' name='q114' value='2'> <span class='letter'>C.</span> Full gear (mask, gloves, overgarment, boots)</label>
+<label id='q114o3' class='opt'><input type='radio' name='q114' value='3'> <span class='letter'>D.</span> Overgarment only</label>
+<div class='answer-key' id='ak114' style='display:none'></div>
+</div>
+<div class='question' id='qwrap115'>
+<p><b>115. The JSLIST suit protects against:</b></p>
+<label id='q115o0' class='opt'><input type='radio' name='q115' value='0'> <span class='letter'>A.</span> Bullets</label>
+<label id='q115o1' class='opt'><input type='radio' name='q115' value='1'> <span class='letter'>B.</span> Chemical agents</label>
+<label id='q115o2' class='opt'><input type='radio' name='q115' value='2'> <span class='letter'>C.</span> Radiation only</label>
+<label id='q115o3' class='opt'><input type='radio' name='q115' value='3'> <span class='letter'>D.</span> Heat only</label>
+<div class='answer-key' id='ak115' style='display:none'></div>
+</div>
+<div class='question' id='qwrap116'>
+<p><b>116. Overboots are used to:</b></p>
+<label id='q116o0' class='opt'><input type='radio' name='q116' value='0'> <span class='letter'>A.</span> Increase speed</label>
+<label id='q116o1' class='opt'><input type='radio' name='q116' value='1'> <span class='letter'>B.</span> Protect feet from contamination</label>
+<label id='q116o2' class='opt'><input type='radio' name='q116' value='2'> <span class='letter'>C.</span> Improve comfort</label>
+<label id='q116o3' class='opt'><input type='radio' name='q116' value='3'> <span class='letter'>D.</span> Reduce weight</label>
+<div class='answer-key' id='ak116' style='display:none'></div>
+</div>
+<div class='question' id='qwrap117'>
+<p><b>117. Protective gloves are designed to:</b></p>
+<label id='q117o0' class='opt'><input type='radio' name='q117' value='0'> <span class='letter'>A.</span> Keep hands warm</label>
+<label id='q117o1' class='opt'><input type='radio' name='q117' value='1'> <span class='letter'>B.</span> Prevent chemical exposure</label>
+<label id='q117o2' class='opt'><input type='radio' name='q117' value='2'> <span class='letter'>C.</span> Improve grip only</label>
+<label id='q117o3' class='opt'><input type='radio' name='q117' value='3'> <span class='letter'>D.</span> Reduce sweat</label>
+<div class='answer-key' id='ak117' style='display:none'></div>
+</div>
+<div class='question' id='qwrap118'>
+<p><b>118. The protective mask filters:</b></p>
+<label id='q118o0' class='opt'><input type='radio' name='q118' value='0'> <span class='letter'>A.</span> Oxygen</label>
+<label id='q118o1' class='opt'><input type='radio' name='q118' value='1'> <span class='letter'>B.</span> Chemical vapors and particles</label>
+<label id='q118o2' class='opt'><input type='radio' name='q118' value='2'> <span class='letter'>C.</span> Water</label>
+<label id='q118o3' class='opt'><input type='radio' name='q118' value='3'> <span class='letter'>D.</span> Light</label>
+<div class='answer-key' id='ak118' style='display:none'></div>
+</div>
+<div class='question' id='qwrap119'>
+<p><b>119. PPE must be properly worn because:</b></p>
+<label id='q119o0' class='opt'><input type='radio' name='q119' value='0'> <span class='letter'>A.</span> It looks professional</label>
+<label id='q119o1' class='opt'><input type='radio' name='q119' value='1'> <span class='letter'>B.</span> Gaps can allow contamination</label>
+<label id='q119o2' class='opt'><input type='radio' name='q119' value='2'> <span class='letter'>C.</span> It increases speed</label>
+<label id='q119o3' class='opt'><input type='radio' name='q119' value='3'> <span class='letter'>D.</span> It reduces noise</label>
+<div class='answer-key' id='ak119' style='display:none'></div>
+</div>
+<div class='question' id='qwrap120'>
+<p><b>120. The biggest limitation of PPE is:</b></p>
+<label id='q120o0' class='opt'><input type='radio' name='q120' value='0'> <span class='letter'>A.</span> It is too light</label>
+<label id='q120o1' class='opt'><input type='radio' name='q120' value='1'> <span class='letter'>B.</span> Heat stress and reduced performance</label>
+<label id='q120o2' class='opt'><input type='radio' name='q120' value='2'> <span class='letter'>C.</span> It increases speed</label>
+<label id='q120o3' class='opt'><input type='radio' name='q120' value='3'> <span class='letter'>D.</span> It is ineffective</label>
+<div class='answer-key' id='ak120' style='display:none'></div>
+</div>
+  </form>
+
+  <div id='result'></div>
+</div>
+
+<div class='overlay' id='lockOverlay'>
+  <div class='modal'>
+    <h2>🔒 Test Locked</h2>
+    <p>This test is locked until the instructor password is entered.</p>
+    <div class='row'>
+      <div>
+        <label for='pw' style='font-weight:bold;display:block;margin-bottom:4px;'>Password</label>
+        <input id='pw' type='password' placeholder='Enter password'>
+      </div>
+      <div>
+        <button type='button' id='unlockBtn'>Unlock</button>
+      </div>
+    </div>
+    <div id='pwMsg' class='hint'></div>
+    <div class='hint'>Instructor: Password is set in this file as <b>TEST_PASSWORD</b>.</div>
+  </div>
+</div>
+
+<script>
+  const TOTAL_QUESTIONS = 120;
+  const PASSING_PERCENT = 70;
+  const TEST_SECONDS = 90*60; // 90 minutes
+  const TEST_PASSWORD = 'iseeyou123';
+  const answers = [1, 1, 2, 2, 2, 1, 1, 2, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 2, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 1, 2, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1];
+  const MAX_VIOLATIONS = 3;
+
+  let unlocked = false;
+  let startedAt = null;
+  let endedAt = null;
+  let time = TEST_SECONDS;
+  let interval = null;
+  let violations = 0;
+
+  const timerEl = document.getElementById('timer');
+  const progressEl = document.getElementById('progress');
+
+  (function setDefaultDate(){
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
+  })();
+
+  function fmtTime(t){
+    const h = Math.floor(t/3600);
+    const m = Math.floor((t%3600)/60);
+    const s = t%60;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  function validateHeader(){
+    const name = document.getElementById('name').value.trim();
+    const rank = document.getElementById('rank').value.trim();
+    const date = document.getElementById('date').value;
+    document.getElementById('startBtn').disabled = !(unlocked && name && rank && date);
+  }
+
+  document.getElementById('name').addEventListener('input', validateHeader);
+  document.getElementById('rank').addEventListener('input', validateHeader);
+  document.getElementById('date').addEventListener('change', validateHeader);
+
+  function unlockTest(){
+    const typed = document.getElementById('pw').value;
+    const msg = document.getElementById('pwMsg');
+    if(typed === TEST_PASSWORD){
+      unlocked = true;
+      document.getElementById('lockOverlay').style.display='none';
+      msg.textContent='';
+      validateHeader();
+    } else {
+      msg.textContent='Incorrect password.';
+    }
+  }
+
+  // Make unlock reliable on iOS: click + touchstart
+  document.getElementById('unlockBtn').addEventListener('click', unlockTest);
+  document.getElementById('unlockBtn').addEventListener('touchstart', (e)=>{ e.preventDefault(); unlockTest(); }, {passive:false});
+  document.getElementById('pw').addEventListener('keydown', (e)=>{ if(e.key==='Enter') unlockTest(); });
+
+  function updateProgress(){
+    let answered = 0;
+    for(let i=1;i<=TOTAL_QUESTIONS;i++){
+      if(document.querySelector(`input[name='q${i}']:checked`)) answered++;
+    }
+    progressEl.textContent = `Answered: ${answered} / ${TOTAL_QUESTIONS}`;
+  }
+
+  document.addEventListener('change', (e)=>{
+    if(e.target && e.target.matches("input[type='radio']")) updateProgress();
+  });
+
+  async function tryFullscreen(){
+    try{
+      if(document.fullscreenElement) return;
+      await document.documentElement.requestFullscreen();
+    } catch(e){ }
+  }
+
+  function startTest(){
+    if(!unlocked) return;
+    // Attempt fullscreen on start
+    tryFullscreen();
+
+    document.getElementById('name').disabled = true;
+    document.getElementById('rank').disabled = true;
+    document.getElementById('date').disabled = true;
+
+    document.getElementById('quiz').classList.remove('hidden');
+    document.getElementById('timer').classList.remove('hidden');
+    document.getElementById('progress').classList.remove('hidden');
+
+    document.getElementById('startBtn').classList.add('hidden');
+    document.getElementById('submitBtn').classList.remove('hidden');
+
+    startedAt = new Date();
+    timerEl.textContent = `Time Remaining: ${fmtTime(time)}`;
+
+    interval = setInterval(()=>{
+      time--;
+      if(time<=0){
+        time=0;
+        clearInterval(interval);
+        submitTest(true, 'Time expired');
+        return;
+      }
+      timerEl.textContent = `Time Remaining: ${fmtTime(time)}`;
+    }, 1000);
+
+    updateProgress();
+  }
+
+  function recordViolation(reason){
+    if(!startedAt || endedAt) return;
+    violations++;
+    if(violations < MAX_VIOLATIONS){
+      alert(`WARNING ${violations}/${MAX_VIOLATIONS}: Focus lost (${reason}).\nAfter ${MAX_VIOLATIONS} violations the test will AUTO-SUBMIT.`);
+    }
+    if(violations >= MAX_VIOLATIONS){
+      submitTest(true, 'Auto-submitted due to focus violations');
+    }
+  }
+
+  window.addEventListener('blur', ()=>recordViolation('window lost focus'));
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) recordViolation('tab hidden'); });
+
+  function submitTest(autoSubmit, reason){
+    if(endedAt) return;
+    if(interval) clearInterval(interval);
+    endedAt = new Date();
+
+    document.querySelectorAll("input[type='radio']").forEach(i=>i.disabled=true);
+
+    let score = 0;
+    for(let i=1;i<=TOTAL_QUESTIONS;i++){
+      const sel = document.querySelector(`input[name='q${i}']:checked`);
+      const correct = answers[i-1];
+      document.getElementById(`q${i}o${correct}`).classList.add('correct');
+      if(sel){
+        if(parseInt(sel.value,10) === correct) score++;
+        else document.getElementById(`q${i}o${sel.value}`).classList.add('incorrect');
+      }
+      const ak = document.getElementById(`ak${i}`);
+      ak.style.display='block';
+      ak.textContent = `Correct answer: ${String.fromCharCode(65+correct)}`;
+    }
+
+    const percent = (score/TOTAL_QUESTIONS)*100;
+    const status = percent >= PASSING_PERCENT ? 'PASS' : 'FAIL';
+
+    const meta = `<p><b>Name:</b> ${document.getElementById('name').value} &nbsp; <b>Rank:</b> ${document.getElementById('rank').value} &nbsp; <b>Date:</b> ${document.getElementById('date').value}</p>`
+      + `<p><b>Started:</b> ${startedAt ? startedAt.toLocaleString() : 'n/a'} &nbsp; <b>Ended:</b> ${endedAt.toLocaleString()} &nbsp; <b>Time left:</b> ${fmtTime(time)}</p>`
+      + `<p><b>Focus/Visibility violations:</b> ${violations}/${MAX_VIOLATIONS}</p>`
+      + (reason ? `<p><b>Note:</b> ${reason}</p>` : '');
+
+    document.getElementById('result').innerHTML = meta + `<h2>${status}</h2><p><b>Score:</b> ${score}/${TOTAL_QUESTIONS} (${percent.toFixed(1)}%)</p>`
+      + (autoSubmit ? '<p><i>Auto-submitted.</i></p>' : '');
+
+    document.getElementById('submitBtn').classList.add('hidden');
+    document.getElementById('resultsBtn').classList.remove('hidden');
+    document.getElementById('printBtn').classList.remove('hidden');
+
+    window.__lastResult = {name:document.getElementById('name').value, rank:document.getElementById('rank').value,
+      date:document.getElementById('date').value, started:startedAt?startedAt.toISOString():null,
+      ended:endedAt.toISOString(), timeLeft:fmtTime(time), score:score, percent:percent, status:status,
+      violations:violations, maxViolations:MAX_VIOLATIONS, note:reason||''};
+  }
+
+  function downloadResults(){
+    const r = window.__lastResult;
+    if(!r){ alert('No results to download yet.'); return; }
+
+    const lines = [];
+    lines.push('CBRN Knowledge Test Results');
+    lines.push(`Name: ${r.name}`);
+    lines.push(`Rank: ${r.rank}`);
+    lines.push(`Date: ${r.date}`);
+    lines.push(`Started: ${r.started}`);
+    lines.push(`Ended: ${r.ended}`);
+    lines.push(`Time Left: ${r.timeLeft}`);
+    lines.push(`Score: ${r.score}/120 (${r.percent.toFixed(1)}%)`);
+    lines.push(`Status: ${r.status}`);
+    lines.push(`Violations: ${r.violations}/${r.maxViolations}`);
+    if(r.note) lines.push(`Note: ${r.note}`);
+    lines.push('');
+    lines.push('Responses (Selected / Correct):');
+
+    for(let i=1;i<=TOTAL_QUESTIONS;i++){
+      const sel = document.querySelector(`input[name='q${i}']:checked`);
+      const selected = sel ? String.fromCharCode(65+parseInt(sel.value,10)) : '—';
+      const correct = String.fromCharCode(65+answers[i-1]);
+      lines.push(`${i}. ${selected} / ${correct}`);
+    }
+
+    const blob = new Blob([lines.join('\n')], {type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const safeName = r.name.replace(/[^a-z0-9]+/gi,'_');
+    a.download = `CBRN_Test_Results_${r.rank}_${safeName}_${r.date}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+</script>
+</body>
+</html>
